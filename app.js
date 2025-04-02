@@ -1,6 +1,7 @@
 const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const swaggerDocument = require('./swagger/swagger.json');
+const path = require('path');
 
 const app = express();
 const cors = require('cors');
@@ -32,12 +33,18 @@ app.use(cors({
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // Mount routes
-app.use('/api/users', userRoutes);
-app.use('/api/videos', videoRoutes);
-app.use('/api/comments', commentRoutes);
-app.use('/api/subscriptions', subscriptionRoutes);
-app.use('/api/donations', donationRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/videos', videoRoutes);
+app.use('/api/v1/comments', commentRoutes);
+app.use('/api/v1/subscriptions', subscriptionRoutes);
+app.use('/api/v1/donations', donationRoutes);
+app.use('/api/v1/admin', adminRoutes);
+
+app.use('/api/v1/uploads', express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res, path) => {
+    res.set('Access-Control-Expose-Headers', 'Content-Disposition');
+  }
+}));
 
 // Global error handler (should be last middleware)
 app.use(errorMiddleware);

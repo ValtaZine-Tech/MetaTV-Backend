@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const videoController = require('../controllers/videoController');
 const auth = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const { upload, handleUploadErrors } = require('../middleware/upload');
 
 // Video upload (authenticated, file upload middleware)
-router.post('/upload', auth, upload.single('video'), videoController.uploadVideo);
+router.post('/upload', auth, upload.single('video'), handleUploadErrors, videoController.uploadVideo);
 
 // Video approval (could be restricted to admin/moderator)
 router.put('/approve/:id', auth, videoController.approveVideo);
